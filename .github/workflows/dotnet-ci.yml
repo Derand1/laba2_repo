@@ -74,6 +74,22 @@ jobs:
             org.opencontainers.image.source=${{github.server_url}}/${{github.repository}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Test container and show logs (Task 2)
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}"
+          
+          echo "=== Production environment ==="
+          docker run --rm "$IMAGE" &
+          CONTAINER_ID=$!
+          sleep 5
+          docker logs $CONTAINER_ID 2>/dev/null || echo "Container finished"
+          
+          echo ""
+          echo "=== Development environment ==="
+          docker run --rm -e ASPNETCORE_ENVIRONMENT=Development "$IMAGE" &
+          CONTAINER_ID=$!
+          sleep 5
+          docker logs $CONTAINER_ID 2>/dev/null || echo "Container finished"
   create-release:
     name: Create GitHub Release
     needs: build-and-push
@@ -135,15 +151,6 @@ jobs:
             my-app-release.tar.gz
             my-app-release.zip
           tag_name: ${{ github.ref_name }}
-      - name: Test container and show logs
-        run: |
-          echo "production"
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
-          sleep 3
-          
-          echo ""
-          echo "Development"
-          docker run --rm -e ASPNETCORE_ENVIRONMENT=Development \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+
 
     
