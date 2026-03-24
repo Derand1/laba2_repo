@@ -12,4 +12,7 @@ EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 COPY --from=build /app/out .
 COPY appsettings*.json ./
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/api/weather/weatherforecast || exit 1
 ENTRYPOINT ["dotnet", "MyFirstCI.Api.dll"]
