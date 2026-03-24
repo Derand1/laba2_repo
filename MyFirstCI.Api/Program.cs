@@ -5,6 +5,8 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+var configMessage = builder.Configuration.GetValue<string>("Message") ?? "chto to  ne to";
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

@@ -135,6 +135,15 @@ jobs:
             my-app-release.tar.gz
             my-app-release.zip
           tag_name: ${{ github.ref_name }}
-
+      - name: Test container and show logs
+        run: |
+          echo "production"
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          sleep 3
+          
+          echo ""
+          echo "Development"
+          docker run --rm -e ASPNETCORE_ENVIRONMENT=Development \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
 
     
