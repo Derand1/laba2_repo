@@ -121,6 +121,14 @@ jobs:
         run: |
           tar -czf my-app-release.tar.gz -C ./publish-release .
           zip -r my-app-release.zip ./publish-release/*
+      - name: Determine if pre-release
+        id: prerelease_check
+        run: |          
+          if [[ "${{ github.ref_name }}" == *"-beta"* ]] || [[ "${{ github.ref_name }}" == *"-rc"* ]] || [[ "${{ github.ref_name }}" == *"-alpha"* ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Generate release notes from tag
         id: release_notes
@@ -146,6 +154,7 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: ${{ steps.release_notes.outputs.notes }}
           draft: false
+          prerelease: ${{ steps.prerelease_check.outputs.is_prerelease }}
           prerelease: false
           files: |
             my-app-release.tar.gz
