@@ -18,7 +18,7 @@ public class WeatherController : ControllerBase
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                     Random.Shared.Next(-20, 55)
                 ))
-            .ToArray()
+            .ToArray();
         return forecast;
     }
 }
