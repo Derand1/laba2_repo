@@ -155,7 +155,6 @@ jobs:
           body: ${{ steps.release_notes.outputs.notes }}
           draft: false
           prerelease: ${{ steps.prerelease_check.outputs.is_prerelease }}
-          prerelease: false
           files: |
             my-app-release.tar.gz
             my-app-release.zip
